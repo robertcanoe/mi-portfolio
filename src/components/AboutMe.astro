@@ -1,0 +1,39 @@
+---
+const SKILLS = [
+  "JavaScript",
+  "TypeScript",
+  "React",
+  "Node.js",
+  "Astro",
+  "CSS",
+  "Tailwind",
+  "Git"
+]
+---
+
+<article class="flex flex-col items-start gap-4">
+  <p class="text-gray-600 dark:text-gray-400">
+    ¡Hola! Soy [Tu Nombre], desarrollador web con experiencia en crear aplicaciones web modernas y eficientes.
+    Me especializo en tecnologías frontend y backend, siempre buscando aprender y mejorar mis habilidades.
+  </p>
+  
+  <p class="text-gray-600 dark:text-gray-400">
+    Disfruto resolviendo problemas complejos y creando experiencias de usuario intuitivas y atractivas.
+    Siempre estoy abierto a nuevos desafíos y oportunidades de colaboración.
+  </p>
+
+  <div class="flex flex-col gap-4">
+    <h3 class="text-lg font-semibold">Habilidades principales</h3>
+    <ul class="flex flex-wrap gap-2">
+      {
+        SKILLS.map((skill) => (
+          <li>
+            <span class="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-full px-3 py-1 text-sm">
+              {skill}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</article>
