@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-background text-gray-100;
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3 {
+  @apply font-bold;
+}
+
+a {
+  @apply transition-colors duration-200;
+}
+
+.container {
+  @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center;
+}
+
+section {
+  @apply py-16 flex flex-col items-center;
+}
+
+html {
+  scroll-behavior: smooth;
+}
