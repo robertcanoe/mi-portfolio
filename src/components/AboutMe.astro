@@ -1,41 +1,68 @@
 ---
 const SKILLS = [
-  "JavaScript",
-  "Python",
-  "C#",
-  ".NET",
-  "Astro",
-  "Node.js",
-  "SQL",
-  "HTML",
-  "CSS",
-  "Tailwind",
-  "Git"
-]
+  { name: "JavaScript", logo: "javascript.svg" },
+  { name: "Python", logo: "python.svg" },
+  { name: "C#", logo: "csharp.svg" },
+  { name: "MongoDB", logo: "mongodb.svg" },
+  { name: "Astro", logo: "astro" },
+  { name: "Node.js", logo: "nodejs.svg" },
+  { name: "MySQL", logo: "mysql.svg" },
+  { name: "HTML", logo: "html5.svg" },
+  { name: "CSS", logo: "css_old.svg" },
+  { name: "Tailwind", logo: "tailwindcss.svg" },
+  { name: "Git", logo: "git.svg" }
+];
+
 ---
 
 <article class="flex flex-col items-start gap-4">
   <p class="text-gray-600 dark:text-gray-400">
-    ¡Hola! Soy Roberto Cano Estévez, vivo en un pueblo de Córdoba, Almodovar del Río y soy estudiante de un grado superior de Desarrollo de Aplicaciones Web, me interesa mucho el diseño de interfaces, estoy buscando oportunidades para crecer como desarrollador full-stack y enfrentar nuevos retos.
+    ¡Hola! Soy Roberto Cano Estévez, de Almodóvar del Río (Córdoba). Estoy estudiando un grado superior de Desarrollo de Aplicaciones Web porque siempre me ha llamado la atención cómo funciona todo lo que usamos a diario en internet.
   </p>
   
   <p class="text-gray-600 dark:text-gray-400">
-    Disfruto resolviendo problemas complejos y creando experiencias de usuario intuitivas y atractivas.
-    Siempre estoy abierto a nuevos desafíos y oportunidades de colaboración.
+    Me interesa especialmente el diseño de interfaces y todo lo que tenga que ver con crear cosas útiles y bien hechas, tanto por dentro como por fuera. Me gusta meterme en proyectos, probar cosas nuevas y buscar soluciones cuando algo no funciona.
   </p>
 
-  <div class="flex flex-col gap-4">
+  <p class="text-gray-600 dark:text-gray-400">
+    Ahora mismo estoy centrado en mejorar como desarrollador full-stack y en coger experiencia real con proyectos propios o colaborativos. Siempre estoy abierto a aprender más y a meterme en retos nuevos.
+  </p>
+
+  <div class="flex flex-col gap-4 mt-4 w-full">
     <h3 class="text-lg font-semibold">Habilidades principales</h3>
-    <ul class="flex flex-wrap gap-2">
+    <ul class="flex flex-wrap gap-4">
       {
         SKILLS.map((skill) => (
-          <li>
-            <span class="bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-full px-3 py-1 text-sm">
-              {skill}
-            </span>
+          <li class="flex flex-col items-center justify-center w-20">
+            {
+              skill.name === "Astro" ? (
+                <>
+                  <img 
+                    src="/astro.svg" 
+                    alt="Astro Light" 
+                    class="w-12 h-12 object-contain mb-1 block dark:hidden"
+                    loading="lazy"
+                  />
+                  <img 
+                    src="/astro_dark.svg" 
+                    alt="Astro Dark" 
+                    class="w-12 h-12 object-contain mb-1 hidden dark:block"
+                    loading="lazy"
+                  />
+                </>
+              ) : (
+                <img 
+                  src={`/${skill.logo}`} 
+                  alt={skill.name} 
+                  class="w-12 h-12 object-contain mb-1" 
+                  loading="lazy"
+                />
+              )
+            }
+            <span class="text-xs text-center text-gray-700 dark:text-gray-200">{skill.name}</span>
           </li>
         ))
       }
     </ul>
-  </div>
-</article>
+    
+    
