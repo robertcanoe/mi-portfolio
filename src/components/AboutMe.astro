@@ -10,7 +10,9 @@ const SKILLS = [
   { name: "HTML", logo: "html5.svg" },
   { name: "CSS", logo: "css_old.svg" },
   { name: "Tailwind", logo: "tailwindcss.svg" },
-  { name: "Git", logo: "git.svg" }
+  { name: "Git", logo: "git.svg" },
+  { name: "C++", logo: "c-plusplus.svg" },
+
 ];
 
 ---
@@ -30,10 +32,10 @@ const SKILLS = [
 
   <div class="flex flex-col gap-4 mt-4 w-full">
     <h3 class="text-lg font-semibold">Habilidades principales</h3>
-    <ul class="flex flex-wrap gap-4">
+    <ul class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-6 justify-items-center w-full">
       {
         SKILLS.map((skill) => (
-          <li class="flex flex-col items-center justify-center w-20">
+          <li class="flex flex-col items-center justify-center w-20 hover:scale-110 transition-transform">
             {
               skill.name === "Astro" ? (
                 <>
@@ -64,5 +66,7 @@ const SKILLS = [
         ))
       }
     </ul>
-    
-    
+  </div>
+</article>
+
+
