@@ -1,0 +1,78 @@
+---
+interface Props {
+  text: string;
+  delay?: number;
+  speed?: number;
+  class?: string;
+  cursor?: boolean;
+}
+
+const { 
+  text, 
+  delay = 0, 
+  speed = 50, 
+  class: className = "",
+  cursor = true 
+} = Astro.props;
+---
+
+<span
+  class:list={[className]}
+  data-gsap="type-writer"
+  data-text={text}
+  data-delay={delay}
+  data-speed={speed}
+>
+</span>
+<span
+  class="after:content-['|'] after:ml-1 after:animate-blink inline-block"
+  data-cursor
+></span>
+
+<script>
+  import { gsap } from "gsap";
+
+  function typeWriter(element: Element) {
+    const text = element.getAttribute("data-text") || "";
+    const delay = Number(element.getAttribute("data-delay"));
+    const speed = Number(element.getAttribute("data-speed"));
+    let currentText = "";
+    const cursor = element.nextElementSibling;
+    
+    gsap.delayedCall(delay, () => {
+      const timeline = gsap.timeline();
+      
+      for (let i = 0; i < text.length; i++) {
+        timeline.add(() => {
+          currentText += text[i];
+          element.textContent = currentText;
+        }, i * speed / 1000);
+      }
+
+      // Ocultar el cursor cuando termine de escribir
+      timeline.to(cursor, {
+        opacity: 0,
+        duration: 0.3,
+        delay: 0.5
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    document.querySelectorAll('[data-gsap="type-writer"]').forEach(typeWriter);
+  });
+
+  // Primera carga
+  document.querySelectorAll('[data-gsap="type-writer"]').forEach(typeWriter);
+</script>
+
+<style>
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .animate-blink {
+    animation: blink 1s step-end infinite;
+  }
+</style>
