@@ -1,21 +1,40 @@
+---
+import FadeIn from './animations/FadeIn.astro';
+import TypeWriter from './animations/TypeWriter.astro';
+---
+
 <div class="flex flex-col items-center justify-center">
   <div class="flex flex-col items-center justify-center">
-    <img
-      class="rounded-full h-32 w-32 mb-4 object-cover mx-auto"
-      src="/roberto_optimizada.webp"
-      alt="Tu foto"
-    />
-    <h1 class="text-4xl font-bold text-center mb-4">
-      Roberto Cano Estévez
-    </h1>
-    <p class="text-xl text-center text-gray-600 dark:text-gray-300 mb-4">
-      Desarrollador Full Stack
-    </p>
-    <p class="text-center text-gray-600 dark:text-gray-300 max-w-[600px] mb-6">
-      Estudiante de Desarrollo de Aplicaciones Web, con muchas ganas de seguir aprendiendo y creciendo en el mundo del desarrollo. Me gusta el diseño, el desarrollo full-stack y experimentar con nuevas tecnologías.
-    </p>
+    <FadeIn y={50} duration={1}>
+      <img
+        class="rounded-full h-32 w-32 mb-4 object-cover mx-auto"
+        src="/roberto_optimizada.webp"
+        alt="Tu foto"
+      />
+    </FadeIn>
+    <FadeIn y={30} duration={1} delay={0.2}>
+      <h1 class="text-4xl font-bold text-center mb-4">
+        <TypeWriter text="Roberto Cano Estévez" delay={0.3} speed={70} />
+      </h1>
+    </FadeIn>
+    <FadeIn y={20} duration={1} delay={1.5}>
+      <p class="text-xl text-center text-gray-600 dark:text-gray-300 mb-4">
+        <TypeWriter 
+          text="Desarrollador Full Stack" 
+          delay={1.6} 
+          speed={50} 
+          cursor={false}
+        />
+      </p>
+    </FadeIn>
+    <FadeIn y={20} duration={1} delay={2.2}>
+      <p class="text-center text-gray-600 dark:text-gray-300 max-w-[600px] mb-6">
+        Estudiante de Desarrollo de Aplicaciones Web, con muchas ganas de seguir aprendiendo y creciendo en el mundo del desarrollo. Me gusta el diseño, el desarrollo full-stack y experimentar con nuevas tecnologías.
+      </p>
+    </FadeIn>
     
-    <div class="flex flex-wrap justify-center gap-4 items-center">
+    <FadeIn y={20} duration={1} delay={2.5}>
+      <div class="flex flex-wrap justify-center gap-4 items-center">
       <a 
         href="https://www.linkedin.com/in/robertocanoe/" 
         target="_blank"
