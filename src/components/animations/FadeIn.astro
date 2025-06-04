@@ -1,0 +1,61 @@
+---
+interface Props {
+  y?: number;
+  x?: number;
+  duration?: number;
+  delay?: number;
+  class?: string;
+}
+
+const { y = 0, x = 0, duration = 1, delay = 0, class: className = "" } = Astro.props;
+---
+
+<div
+  class:list={["opacity-0", className]}
+  data-gsap="fade-in"
+  data-y={y}
+  data-x={x}
+  data-duration={duration}
+  data-delay={delay}
+>
+  <slot />
+</div>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  function initAnimation() {
+    gsap.registerPlugin(ScrollTrigger);
+
+    const fadeInElements = document.querySelectorAll('[data-gsap="fade-in"]');
+
+    fadeInElements.forEach((element) => {
+      const y = Number(element.getAttribute("data-y"));
+      const x = Number(element.getAttribute("data-x"));
+      const duration = Number(element.getAttribute("data-duration"));
+      const delay = Number(element.getAttribute("data-delay"));
+
+      gsap.set(element, { opacity: 0, y, x });
+
+      gsap.to(element, {
+        opacity: 1,
+        y: 0,
+        x: 0,
+        duration,
+        delay,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: element,
+          start: "top bottom-=100",
+          toggleActions: "play none none reverse"
+        }
+      });
+    });
+  }
+
+  // Esperar a que el DOM esté listo
+  document.addEventListener('astro:page-load', initAnimation);
+  // También inicializar en la primera carga
+  initAnimation();
+</script>
