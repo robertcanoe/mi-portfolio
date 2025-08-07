@@ -30,47 +30,67 @@ const {
 ></span>
 
 <script>
-  import { gsap } from "gsap";
-
   function typeWriter(element: Element) {
     const text = element.getAttribute("data-text") || "";
     const delay = Number(element.getAttribute("data-delay")) || 0;
     const speed = Number(element.getAttribute("data-speed")) || 50;
-    let currentText = "";
-    const cursor = element.nextElementSibling;
+    const cursor = element.nextElementSibling as HTMLElement;
     
     // Limpiar cualquier animación previa
-    gsap.killTweensOf(element);
-    if (cursor) gsap.killTweensOf(cursor);
+    const existingTimeout = element.getAttribute("data-timeout-id");
+    if (existingTimeout) {
+      clearTimeout(Number(existingTimeout));
+    }
     
-    gsap.delayedCall(delay / 1000, () => {
-      const timeline = gsap.timeline();
+    // Limpiar el contenido previo
+    element.textContent = "";
+    
+    // Mostrar el cursor mientras se escribe
+    if (cursor) {
+      cursor.style.opacity = "1";
+    }
+    
+    // Función para escribir caracter por caracter
+    function writeText() {
+      let currentIndex = 0;
       
-      // Usar timeline.call() en lugar de timeline.add() para mejor compatibilidad móvil
-      for (let i = 0; i < text.length; i++) {
-        timeline.call(() => {
-          currentText += text[i];
-          element.textContent = currentText;
-        }, [], i * speed / 1000);
+      function addNextChar() {
+        if (currentIndex < text.length) {
+          element.textContent = text.substring(0, currentIndex + 1);
+          currentIndex++;
+          setTimeout(addNextChar, speed);
+        } else {
+          // Cuando termine de escribir, ocultar el cursor después de un breve delay
+          if (cursor) {
+            setTimeout(() => {
+              cursor.style.transition = "opacity 0.3s ease";
+              cursor.style.opacity = "0";
+            }, 500);
+          }
+        }
       }
-
-      // Ocultar el cursor cuando termine de escribir
-      if (cursor) {
-        timeline.to(cursor, {
-          opacity: 0,
-          duration: 0.3,
-          delay: 0.5
-        });
-      }
-    });
+      
+      addNextChar();
+    }
+    
+    // Iniciar la escritura después del delay especificado
+    const timeoutId = setTimeout(writeText, delay);
+    element.setAttribute("data-timeout-id", timeoutId.toString());
   }
 
-  document.addEventListener('astro:page-load', () => {
+  function initTypeWriters() {
     document.querySelectorAll('[data-gsap="type-writer"]').forEach(typeWriter);
-  });
+  }
 
-  // Primera carga
-  document.querySelectorAll('[data-gsap="type-writer"]').forEach(typeWriter);
+  // Manejar tanto la carga inicial como las navegaciones de Astro
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTypeWriters);
+  } else {
+    initTypeWriters();
+  }
+
+  // Para navegación SPA de Astro
+  document.addEventListener('astro:page-load', initTypeWriters);
 </script>
 
 <style>
