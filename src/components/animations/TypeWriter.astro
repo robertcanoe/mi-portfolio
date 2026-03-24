@@ -7,12 +7,12 @@ interface Props {
   cursor?: boolean;
 }
 
-const { 
-  text, 
-  delay = 0, 
-  speed = 50, 
+const {
+  text,
+  delay = 0,
+  speed = 50,
   class: className = "",
-  cursor = true 
+  cursor = true
 } = Astro.props;
 ---
 
@@ -22,12 +22,13 @@ const {
   data-text={text}
   data-delay={delay}
   data-speed={speed}
->
-</span>
-<span
-  class="after:content-['|'] after:ml-1 after:animate-blink inline-block"
-  data-cursor
 ></span>
+{cursor && (
+  <span
+    class="after:content-['|'] after:ml-1 after:animate-blink inline-block"
+    data-cursor
+  ></span>
+)}
 
 <script>
   function typeWriter(element: Element) {
@@ -35,32 +36,22 @@ const {
     const delay = Number(element.getAttribute("data-delay")) || 0;
     const speed = Number(element.getAttribute("data-speed")) || 50;
     const cursor = element.nextElementSibling as HTMLElement;
-    
-    // Limpiar cualquier animación previa
-    const existingTimeout = element.getAttribute("data-timeout-id");
-    if (existingTimeout) {
-      clearTimeout(Number(existingTimeout));
-    }
-    
-    // Limpiar el contenido previo
+
+    // Cancelar timeout previo si existe (re-renders)
+    const existingId = element.getAttribute("data-timeout-id");
+    if (existingId) clearTimeout(Number(existingId));
+
     element.textContent = "";
-    
-    // Mostrar el cursor mientras se escribe
-    if (cursor) {
-      cursor.style.opacity = "1";
-    }
-    
-    // Función para escribir caracter por caracter
+    if (cursor) cursor.style.opacity = "1";
+
     function writeText() {
-      let currentIndex = 0;
-      
+      let i = 0;
       function addNextChar() {
-        if (currentIndex < text.length) {
-          element.textContent = text.substring(0, currentIndex + 1);
-          currentIndex++;
+        if (i < text.length) {
+          element.textContent = text.substring(0, i + 1);
+          i++;
           setTimeout(addNextChar, speed);
         } else {
-          // Cuando termine de escribir, ocultar el cursor después de un breve delay
           if (cursor) {
             setTimeout(() => {
               cursor.style.transition = "opacity 0.3s ease";
@@ -69,28 +60,23 @@ const {
           }
         }
       }
-      
       addNextChar();
     }
-    
-    // Iniciar la escritura después del delay especificado
-    const timeoutId = setTimeout(writeText, delay);
-    element.setAttribute("data-timeout-id", timeoutId.toString());
+
+    const id = setTimeout(writeText, delay);
+    element.setAttribute("data-timeout-id", id.toString());
   }
 
   function initTypeWriters() {
-    document.querySelectorAll('[data-gsap="type-writer"]').forEach(typeWriter);
+    // Pequeño tick para asegurar que GSAP ya aplicó opacity:1 al FadeIn padre
+    requestAnimationFrame(() => {
+      document.querySelectorAll('[data-gsap="type-writer"]').forEach(typeWriter);
+    });
   }
 
-  // Manejar tanto la carga inicial como las navegaciones de Astro
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initTypeWriters);
-  } else {
-    initTypeWriters();
-  }
-
-  // Para navegación SPA de Astro
-  document.addEventListener('astro:page-load', initTypeWriters);
+  // Una sola inicialización, sin duplicados
+  document.addEventListener("astro:page-load", initTypeWriters);
+  document.addEventListener("DOMContentLoaded", initTypeWriters);
 </script>
 
 <style>
@@ -98,7 +84,6 @@ const {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
   }
-
   .animate-blink {
     animation: blink 1s step-end infinite;
   }
