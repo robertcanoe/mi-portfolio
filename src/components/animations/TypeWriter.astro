@@ -5,6 +5,9 @@ interface Props {
   speed?: number;
   class?: string;
   cursor?: boolean;
+  loop?: boolean;
+  loopDelay?: number;
+  intersect?: boolean;
 }
 
 const {
@@ -12,79 +15,145 @@ const {
   delay = 0,
   speed = 50,
   class: className = "",
-  cursor = true
+  cursor = true,
+  loop = false,
+  loopDelay = 2000,
+  intersect = true,
 } = Astro.props;
 ---
 
 <span
-  class:list={[className]}
-  data-gsap="type-writer"
+  class:list={["tw-root", className]}
+  data-typewriter
   data-text={text}
   data-delay={delay}
   data-speed={speed}
-></span>
-{cursor && (
-  <span
-    class="after:content-['|'] after:ml-1 after:animate-blink inline-block"
-    data-cursor
-  ></span>
-)}
+  data-loop={loop}
+  data-loop-delay={loopDelay}
+  data-intersect={intersect}
+>
+  <span class="tw-text" aria-live="polite" aria-label={text}></span>
+  {cursor && <span class="tw-cursor" aria-hidden="true">|</span>}
+</span>
 
 <script>
-  function typeWriter(element: Element) {
-    const text = element.getAttribute("data-text") || "";
-    const delay = Number(element.getAttribute("data-delay")) || 0;
-    const speed = Number(element.getAttribute("data-speed")) || 50;
-    const cursor = element.nextElementSibling as HTMLElement;
+  const instances = new WeakMap<Element, () => void>();
 
-    // Cancelar timeout previo si existe (re-renders)
-    const existingId = element.getAttribute("data-timeout-id");
-    if (existingId) clearTimeout(Number(existingId));
+  function runTypewriter(wrapper: Element) {
+    const text      = wrapper.getAttribute("data-text") ?? "";
+    const delay     = Number(wrapper.getAttribute("data-delay"))      || 0;
+    const speed     = Number(wrapper.getAttribute("data-speed"))      || 50;
+    const loop      = wrapper.getAttribute("data-loop")      === "true";
+    const loopDelay = Number(wrapper.getAttribute("data-loop-delay")) || 2000;
 
-    element.textContent = "";
-    if (cursor) cursor.style.opacity = "1";
+    const textEl   = wrapper.querySelector<HTMLElement>(".tw-text");
+    const cursorEl = wrapper.querySelector<HTMLElement>(".tw-cursor");
 
-    function writeText() {
+    if (!textEl) return;
+
+    instances.get(wrapper)?.();
+
+    let cancelled = false;
+    let timerId: ReturnType<typeof setTimeout>;
+
+    instances.set(wrapper, () => {
+      cancelled = true;
+      clearTimeout(timerId);
+    });
+
+    const setCursorTyping = (typing: boolean) => {
+      cursorEl?.classList.toggle("tw-cursor--typing", typing);
+      cursorEl?.classList.remove("tw-cursor--hidden");
+    };
+    const hideCursor = () => cursorEl?.classList.add("tw-cursor--hidden");
+
+    function type() {
+      if (cancelled) return;
+      textEl!.textContent = "";
+      setCursorTyping(true);
       let i = 0;
-      function addNextChar() {
+
+      const addChar = () => {
+        if (cancelled) return;
         if (i < text.length) {
-          element.textContent = text.substring(0, i + 1);
-          i++;
-          setTimeout(addNextChar, speed);
+          textEl!.textContent = text.substring(0, ++i);
+          timerId = setTimeout(addChar, speed);
         } else {
-          if (cursor) {
-            setTimeout(() => {
-              cursor.style.transition = "opacity 0.3s ease";
-              cursor.style.opacity = "0";
-            }, 500);
-          }
+          setCursorTyping(false);
+          timerId = setTimeout(loop ? erase : hideCursor, loop ? loopDelay : 1500);
         }
-      }
-      addNextChar();
+      };
+      addChar();
     }
 
-    const id = setTimeout(writeText, delay);
-    element.setAttribute("data-timeout-id", id.toString());
+    function erase() {
+      if (cancelled) return;
+      setCursorTyping(true);
+      const shrink = () => {
+        if (cancelled) return;
+        const current = textEl!.textContent ?? "";
+        if (current.length > 0) {
+          textEl!.textContent = current.slice(0, -1);
+          timerId = setTimeout(shrink, speed / 2);
+        } else {
+          timerId = setTimeout(type, 400);
+        }
+      };
+      shrink();
+    }
+
+    timerId = setTimeout(type, delay);
   }
 
-  function initTypeWriters() {
-    // Pequeño tick para asegurar que GSAP ya aplicó opacity:1 al FadeIn padre
-    requestAnimationFrame(() => {
-      document.querySelectorAll('[data-gsap="type-writer"]').forEach(typeWriter);
+  function initAll() {
+    document.querySelectorAll<Element>("[data-typewriter]").forEach((el) => {
+      const useIntersect = el.getAttribute("data-intersect") !== "false";
+
+      if (useIntersect) {
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (!entry.isIntersecting) return;
+            observer.unobserve(el);
+            runTypewriter(el);
+          },
+          { threshold: 0.2 }
+        );
+        observer.observe(el);
+      } else {
+        runTypewriter(el);
+      }
     });
   }
 
-  // Una sola inicialización, sin duplicados
-  document.addEventListener("astro:page-load", initTypeWriters);
-  document.addEventListener("DOMContentLoaded", initTypeWriters);
+  document.addEventListener("astro:page-load", initAll);
 </script>
 
 <style>
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+  .tw-root {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 1px;
   }
-  .animate-blink {
-    animation: blink 1s step-end infinite;
+
+  .tw-cursor {
+    display: inline-block;
+    font-weight: 300;
+    animation: tw-blink 1s step-end infinite;
+    transition: opacity 0.4s ease;
+  }
+
+  .tw-cursor--typing {
+    animation: none;
+    opacity: 1;
+  }
+
+  .tw-cursor--hidden {
+    animation: none;
+    opacity: 0;
+  }
+
+  @keyframes tw-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
   }
 </style>
