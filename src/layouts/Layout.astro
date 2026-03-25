@@ -6,10 +6,13 @@ import { ClientRouter } from "astro:transitions"
 
 interface Props {
   title: string
-  description: string
+  description?: string
 }
 
 const { description, title } = Astro.props
+const pageDescription =
+  description?.trim() ||
+  "Portfolio personal de Roberto Cano Estevez: experiencia, proyectos y habilidades en desarrollo web."
 ---
 
 <!doctype html>
@@ -17,7 +20,7 @@ const { description, title } = Astro.props
   <head>
 
     <meta charset="UTF-8" />
-    <meta name="description" content={description} />
+    <meta name="description" content={pageDescription} />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
