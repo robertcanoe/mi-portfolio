@@ -5,6 +5,9 @@ import MoonIcon from "./icons/Moon.astro"
 
 <button
   id="themeToggle"
+  aria-label="Activar modo oscuro"
+  aria-pressed="false"
+  title="Cambiar tema"
   class="inline-flex text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5"
 >
   <SunIcon class="opacity-100 transition-all dark:opacity-0" />
@@ -13,22 +16,28 @@ import MoonIcon from "./icons/Moon.astro"
 
 <script is:inline>
   const theme = (() => {
-    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-      return localStorage.getItem('theme')
+    if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+      return localStorage.getItem("theme")
     }
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark'
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark"
     }
-    return 'light'
+    return "light"
   })()
 
-  if (theme === 'light') {
-    document.documentElement.classList.remove('dark')
+  if (theme === "light") {
+    document.documentElement.classList.remove("dark")
   } else {
-    document.documentElement.classList.add('dark')
+    document.documentElement.classList.add("dark")
   }
 
-  window.localStorage.setItem('theme', theme)
+  window.localStorage.setItem("theme", theme)
+
+  // Sincroniza aria al estado inicial
+  const btn = document.getElementById("themeToggle")
+  const isDarkInitial = theme === "dark"
+  btn.setAttribute("aria-pressed", isDarkInitial.toString())
+  btn.setAttribute("aria-label", isDarkInitial ? "Activar modo claro" : "Activar modo oscuro")
 
   const handleToggleClick = () => {
     const element = document.documentElement
@@ -36,7 +45,11 @@ import MoonIcon from "./icons/Moon.astro"
 
     const isDark = element.classList.contains("dark")
     localStorage.setItem("theme", isDark ? "dark" : "light")
+
+    // Actualiza aria dinámicamente al hacer clic
+    btn.setAttribute("aria-pressed", isDark.toString())
+    btn.setAttribute("aria-label", isDark ? "Activar modo claro" : "Activar modo oscuro")
   }
 
-  document.getElementById("themeToggle").addEventListener("click", handleToggleClick)
+  btn.addEventListener("click", handleToggleClick)
 </script>
