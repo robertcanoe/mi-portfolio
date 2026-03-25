@@ -6,49 +6,61 @@ interface Skill {
 }
 
 const SKILLS: Skill[] = [
-  { name: "Astro",       logo: "assets/logos/tech/astro.svg", logoDark: "assets/logos/tech/astro_dark.svg" },
-  { name: "TypeScript",  logo: "assets/logos/tech/typescript.svg" },
-  { name: "Angular",     logo: "assets/logos/tech/angular.svg" },
-  { name: "React",       logo: "assets/logos/tech/react_light.svg" },
-  { name: "JavaScript",  logo: "assets/logos/tech/javascript.svg" },
-  { name: "C#",          logo: "assets/logos/tech/csharp.svg" },
-  { name: "MongoDB",     logo: "assets/logos/tech/mongodb.svg" },
-  { name: "MySQL",       logo: "assets/logos/tech/mysql.svg" },
-  { name: "Node.js",     logo: "assets/logos/tech/nodejs.svg" },
-  { name: "Python",      logo: "assets/logos/tech/python.svg" },
-  { name: "Git",         logo: "assets/logos/tech/git.svg" },
-  { name: "Tailwind",    logo: "assets/logos/tech/tailwindcss.svg" },
-  { name: "HTML",        logo: "assets/logos/tech/html5.svg" },
-  { name: "CSS",         logo: "assets/logos/tech/css_old.svg" },
-  { name: "C++",         logo: "assets/logos/tech/c-plusplus.svg" },
+  {
+    name: "Astro",
+    logo: "assets/logos/tech/astro.svg",
+    logoDark: "assets/logos/tech/astro_dark.svg",
+  },
+  { name: "TypeScript", logo: "assets/logos/tech/typescript.svg" },
+  { name: "Angular", logo: "assets/logos/tech/angular.svg" },
+  { name: "React", logo: "assets/logos/tech/react_light.svg" },
+  { name: "JavaScript", logo: "assets/logos/tech/javascript.svg" },
+  { name: "C#", logo: "assets/logos/tech/csharp.svg" },
+  { name: "MongoDB", logo: "assets/logos/tech/mongodb.svg" },
+  { name: "MySQL", logo: "assets/logos/tech/mysql.svg" },
+  { name: "Node.js", logo: "assets/logos/tech/nodejs.svg" },
+  { name: "Python", logo: "assets/logos/tech/python.svg" },
+  { name: "Git", logo: "assets/logos/tech/git.svg" },
+  { name: "Tailwind", logo: "assets/logos/tech/tailwindcss.svg" },
+  { name: "HTML", logo: "assets/logos/tech/html5.svg" },
+  { name: "CSS", logo: "assets/logos/tech/css_old.svg" },
+  { name: "C++", logo: "assets/logos/tech/c-plusplus.svg" },
 ];
 ---
 
 <article class="flex flex-col items-start gap-4">
   <p class="text-gray-600 dark:text-gray-400">
-    ¡Hola! Soy <span class="font-semibold text-blue-600 dark:text-blue-400">Roberto Cano Estévez</span>,
-    de Almodóvar del Río (Córdoba). Estoy cursando <span class="underline">2º DAW en IES Gran Capitán</span>
+    ¡Hola! Soy <span class="font-semibold text-blue-600 dark:text-blue-400"
+      >Roberto Cano Estévez</span
+    >, de Almodóvar del Río (Córdoba). Estoy cursando <span class="underline"
+      >2º DAW en IES Gran Capitán</span
+    >
     en régimen de <span class="font-semibold">formación dual</span> con
-    <span class="font-semibold text-blue-600 dark:text-blue-400">Deuser / Indra Group</span>,
-    donde trabajo en el departamento de Software Factory OT.
+    <span class="font-semibold text-blue-600 dark:text-blue-400"
+      >Deuser / Indra Group</span
+    >, donde trabajo en el departamento de Software Factory OT.
   </p>
 
   <p class="text-gray-600 dark:text-gray-400">
-    Me especializo en desarrollo <span class="underline">Full-Stack</span> con Angular, React y .NET Core,
-    aplicando principios SOLID y Clean Architecture. Además, trabajo con sistemas industriales:
-    <span class="font-semibold text-blue-600 dark:text-blue-400">SCADA, OPC UA, PLCs y robótica KUKA</span> —
-    una combinación que me diferencia como perfil técnico.
+    Me especializo en desarrollo <span class="underline">Full-Stack</span> con Angular,
+    React y .NET Core, aplicando principios SOLID y Clean Architecture. Además, trabajo
+    con sistemas industriales:
+    <span class="font-semibold text-blue-600 dark:text-blue-400"
+      >SCADA, OPC UA, PLCs y robótica KUKA</span
+    > — una combinación que me diferencia como perfil técnico.
   </p>
 
   <p class="text-gray-600 dark:text-gray-400">
-    Disfruto construir proyectos bien estructurados, resolver problemas reales y seguir creciendo
-    cada día. Siempre abierto a nuevos retos y colaboraciones.
+    Disfruto construir proyectos bien estructurados, resolver problemas reales y
+    seguir creciendo cada día. Siempre abierto a nuevos retos y colaboraciones.
   </p>
 </article>
 
 <div class="flex flex-col gap-4 mt-14 w-full">
   <h3 class="text-lg font-semibold">Habilidades principales</h3>
-  <ul class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-6 justify-items-center w-full">
+  <ul
+    class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-6 justify-items-center w-full"
+  >
     {
       SKILLS.map((skill) => (
         <li class="flex flex-col items-center justify-center w-20 hover:scale-110 transition-transform">
@@ -75,7 +87,9 @@ const SKILLS: Skill[] = [
               loading="lazy"
             />
           )}
-          <span class="text-xs text-center text-gray-700 dark:text-gray-200">{skill.name}</span>
+          <span class="text-xs text-center text-gray-700 dark:text-gray-200">
+            {skill.name}
+          </span>
         </li>
       ))
     }
@@ -84,10 +98,19 @@ const SKILLS: Skill[] = [
   <!-- Sección Industrial -->
   <h3 class="text-lg font-semibold mt-6">Automatización Industrial</h3>
   <div class="flex flex-wrap gap-3">
-    {["KUKA Robotics", "SCADA", "OPC UA", "PLC Programming", "Modbus", "Sunrise Workbench"].map((tech) => (
-      <span class="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 border border-orange-300 dark:border-orange-700 rounded-full px-4 py-1.5 text-sm font-medium">
-        {tech}
-      </span>
-    ))}
+    {
+      [
+        "KUKA Robotics",
+        "SCADA",
+        "OPC UA",
+        "PLC Programming",
+        "Modbus",
+        "Sunrise Workbench",
+      ].map((tech) => (
+        <span class="bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 border border-orange-300 dark:border-orange-700 rounded-full px-4 py-1.5 text-sm font-medium">
+          {tech}
+        </span>
+      ))
+    }
   </div>
 </div>
