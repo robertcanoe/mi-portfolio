@@ -7,12 +7,32 @@ import { ClientRouter } from "astro:transitions"
 interface Props {
   title: string
   description?: string
+  noindex?: boolean
+  ogImage?: string
 }
 
-const { description, title } = Astro.props
+const { description, title, noindex = false, ogImage = "/icons/favicon.svg" } = Astro.props
 const pageDescription =
   description?.trim() ||
   "Portfolio personal de Roberto Cano Estevez: experiencia, proyectos y habilidades en desarrollo web."
+const siteUrl = Astro.site ?? new URL(Astro.url.origin)
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl)
+const ogImageUrl = new URL(ogImage, siteUrl)
+const robotsContent = noindex
+  ? "noindex, nofollow"
+  : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Roberto Cano Estevez",
+  url: siteUrl.toString(),
+  description: pageDescription,
+  jobTitle: "Desarrollador web",
+  sameAs: [
+    "https://www.linkedin.com/in/robertocanoe/",
+    "https://github.com/robertcanoe"
+  ]
+}
 ---
 
 <!doctype html>
@@ -20,15 +40,32 @@ const pageDescription =
   <head>
 
     <meta charset="UTF-8" />
+    <meta name="author" content="Roberto Cano Estevez" />
     <meta name="description" content={pageDescription} />
+    <meta name="robots" content={robotsContent} />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/png" href="/icons/favicon-96x96.png" sizes="96x96" />
+    <meta name="theme-color" content="#0f172a" />
+    <link rel="canonical" href={canonicalUrl.toString()} />
+
     <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Portfolio de Roberto Cano Estevez" />
     <link rel="manifest" href="/icons/site.webmanifest" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:site_name" content="Portfolio de Roberto Cano Estevez" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalUrl.toString()} />
+    <meta property="og:image" content={ogImageUrl.toString()} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImageUrl.toString()} />
+
     <meta name="generator" content={Astro.generator} />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
     <title>{title}</title>
     <ClientRouter />
   </head>
